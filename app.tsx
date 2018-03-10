@@ -1,9 +1,15 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import './style.less'
 
-debugger
+function MyButton(){
+    return (
+        <button className="ripple-button">foo</button>
+    )
+}
+
 ReactDOM.render(
-    <div>hi</div>,
+    <MyButton/>,
     document.getElementById('root')
-);
+)
 
