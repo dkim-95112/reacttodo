@@ -4,6 +4,21 @@
   width: 5em;
 }
 
-.ripple-enter.ripple-enter-active {
+.ripple-effect {
   background-color: aqua;
+}
+
+.ripple-enter {
+  opacity: 0.1;
+}
+.ripple-enter.ripple-enter-active {
+  opacity: 1;
+  transition: 500ms
+}
+.ripple-leave {
+  opacity: 1;
+}
+.ripple-leave.ripple-leave-active{
+  opacity: 0.1;
+  transition: 500ms;
 }

@@ -1,32 +1,32 @@
 import * as React from "react";
-const Component = React.Component;
+import * as ReactCSSTransitionGroup from "react-addons-css-transition-group";
 import * as ReactDOM from "react-dom";
-//import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import "./style.less";
 
-class MyButton extends Component {
+class MyButton extends React.Component<{}, {oneShot: boolean}> {
     constructor(props: any) {
         super(props);
+        this.state = {oneShot: false};
         this.handleClick = this.handleClick.bind(this);
     }
-    handleClick(){
-        debugger
-    }
-    render() {
+    public render() {
+        const rippleEffect = this.state.oneShot ? <div className="ripple-effect">foo</div> : null;
         return (
             <div>
                 <button className="ripple-button"
                         onClick={() => this.handleClick()}>
                     foo
                 </button>
-                {/* <ReactCSSTransitionGroup
-                    transitionName="ripple"
-                    transitionEnterTimeout={500}
-                    transitionLeaveTimeout={300}>
-                    {this.state.oneShot ? <div>bar</div> : null}
-                </ReactCSSTransitionGroup>*/}
+                {<ReactCSSTransitionGroup transitionName="ripple">
+                    {rippleEffect}
+                </ReactCSSTransitionGroup>}
             </div>
         );
+    }
+    private handleClick() {
+        this.setState({oneShot: true}, () => {
+            this.setState({oneShot: false});
+        });
     }
 }
 
