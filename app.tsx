@@ -7,6 +7,11 @@ import * as ReactRedux from "react-redux";
 import "./style.less";
 import {CSSProperties, HTMLAttributes, ReactNode} from "react";
 
+interface Todo {
+    id: number;
+    text: string;
+    completed: boolean;
+}
 
 const todo = (state: any, action: any) => {
     switch (action.type) {
@@ -80,7 +85,7 @@ const toggleTodo = (id: number) => {
     };
 };
 
-const setVisibilityFilter = (filter: any) => {
+const setVisibilityFilter = (filter: string) => {
     return {
         type: 'SET_VISIBILITY_FILTER',
         filter
@@ -182,7 +187,7 @@ const TodoList = ({
                       todos,
                       onTodoClick
                   }: {
-    todos: any[];
+    todos: Todo[];
     onTodoClick: any;
 }) => {
     return (
@@ -218,18 +223,18 @@ let AddTodo = ({dispatch}: {dispatch?: (action: any) => void}) => {
 };
 AddTodo = connect()(AddTodo);
 
-const getVisibleTodos = (todos: any,
+const getVisibleTodos = (todos: Todo[],
                          filter: string) => {
     switch (filter) {
         case 'SHOW_ALL':
             return todos;
         case 'SHOW_COMPLETED':
             return todos.filter(
-                (t: any) => t.completed
+                (t) => t.completed
             );
         case 'SHOW_ACTIVE':
             return todos.filter(
-                (t: any) => !t.completed
+                (t) => !t.completed
             );
     }
 }
