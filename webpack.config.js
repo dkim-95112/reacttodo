@@ -1,7 +1,12 @@
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 module.exports = {
     entry: './app.tsx',
     mode: 'development',
     devtool: 'inline-source-map',
+    output: {
+        filename: 'bundle.js'
+    },
     module: {
         rules: [
             {
@@ -25,10 +30,7 @@ module.exports = {
             }
         ]
     },
-    resolve: {
-        extensions: ['.tsx', '.ts', '.js']
-    },
-    output: {
-        filename: 'bundle.js'
-    }
+    plugins: [
+        new HtmlWebpackPlugin({template: './index.html'})
+    ]
 };
