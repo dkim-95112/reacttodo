@@ -31,7 +31,7 @@ const todo = (state, action) => {
 };
 
 const todos = (state = [{
-    id: 1, text: "foo"
+    id: 0, text: "foo"
 }], action) => {
     switch (action.type) {
         case 'ADD_TODO':
@@ -64,7 +64,7 @@ const todoApp = combineReducers({
     visibilityFilter
 });
 
-let nextTodoId = 0;
+let nextTodoId = 1;
 const addTodo = (text) => {
     return {
         type: 'ADD_TODO',
@@ -187,11 +187,11 @@ const TodoList = ({
 class AddTodo extends React.Component {
     constructor(props) {
         super(props)
+        this.state = {
+            value: ""
+        }
         this.onChange = this.onChange.bind(this)
         this.add = this.add.bind(this)
-    }
-    componentDidMount() {
-        this.setState({value: ""})
     }
     add(){
         this.props.dispatch(addTodo(this.state.value))
@@ -204,7 +204,7 @@ class AddTodo extends React.Component {
     render() {
         return (
             <div>
-                <input onChange={this.onChange} />
+                <input onChange={this.onChange} value={this.state.value}/>
                 <button
                     className="btn-primary"
                     // disabled={isEmpty(this.state.value)}
