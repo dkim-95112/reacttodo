@@ -187,12 +187,13 @@ const TodoList = ({
 class AddTodo extends React.Component {
     constructor(props) {
         super(props)
-        this.setState({value: ""})
         this.onChange = this.onChange.bind(this)
         this.add = this.add.bind(this)
     }
+    componentDidMount() {
+        this.setState({value: ""})
+    }
     add(){
-        debugger
         this.props.dispatch(addTodo(this.state.value))
         this.setState({value: ""})
     }
@@ -342,9 +343,4 @@ class MyButton extends React.Component<{}, {oneShot: boolean}> {
         });
     }
 }
-
-ReactDOM.render(
-    <MyButton/>,
-    document.getElementById("root")
-);
 */
