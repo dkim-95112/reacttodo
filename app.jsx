@@ -1,19 +1,14 @@
-import * as React from "react";
-import * as ReactCSSTransitionGroup from "react-addons-css-transition-group";
-import * as ReactDOM from "react-dom";
+import React, {SyntheticEvent} from "react";
+import ReactCSSTransitionGroup from "react-addons-css-transition-group";
+import ReactDOM from "react-dom";
 import * as Redux from "redux";
 import * as ReactRedux from "react-redux";
+import isEmpty from "lodash/isEmpty";
 
 import "./style.less";
 import {CSSProperties, HTMLAttributes, ReactNode} from "react";
 
-interface Todo {
-    id: number;
-    text: string;
-    completed: boolean;
-}
-
-const todo = (state: any, action: any) => {
+const todo = (state, action) => {
     switch (action.type) {
         case 'ADD_TODO':
             return {
@@ -37,7 +32,7 @@ const todo = (state: any, action: any) => {
 
 const todos = (state = [{
     id: 1, text: "foo"
-}], action: any) => {
+}], action) => {
     switch (action.type) {
         case 'ADD_TODO':
             return [
@@ -54,7 +49,7 @@ const todos = (state = [{
 };
 
 const visibilityFilter = (state = 'SHOW_ALL',
-                          action: any) => {
+                          action) => {
     switch (action.type) {
         case 'SET_VISIBILITY_FILTER':
             return action.filter;
@@ -70,7 +65,7 @@ const todoApp = combineReducers({
 });
 
 let nextTodoId = 0;
-const addTodo = (text: string) => {
+const addTodo = (text) => {
     return {
         type: 'ADD_TODO',
         id: nextTodoId++,
@@ -78,14 +73,14 @@ const addTodo = (text: string) => {
     };
 };
 
-const toggleTodo = (id: number) => {
+const toggleTodo = (id) => {
     return {
         type: 'TOGGLE_TODO',
         id
     };
 };
 
-const setVisibilityFilter = (filter: string) => {
+const setVisibilityFilter = (filter) => {
     return {
         type: 'SET_VISIBILITY_FILTER',
         filter
@@ -95,17 +90,9 @@ const setVisibilityFilter = (filter: string) => {
 const {Component} = React;
 const {Provider, connect} = ReactRedux;
 
-const Link = ({
-                  active,
-                  children,
-                  onClick,
-              }: {
-    active: boolean;
-    children: Element | Element[];
-    onClick: any;
-}) => {
+const Link = ({active, children, onClick}) => {
     if (active) {
-        return <span>{children}</span>;
+        return <span>{children}</span>
     }
 
     return (
@@ -120,16 +107,16 @@ const Link = ({
     );
 };
 
-const mapStateToLinkProps = (state: any,
-                             ownProps: any) => {
+const mapStateToLinkProps = (state,
+                             ownProps) => {
     return {
         active:
         ownProps.filter ===
         state.visibilityFilter
     };
 };
-const mapDispatchToLinkProps = (dispatch: any,
-                                ownProps: any) => {
+const mapDispatchToLinkProps = (dispatch,
+                                ownProps) => {
     return {
         onClick: () => {
             dispatch(
@@ -165,11 +152,7 @@ const Todo = ({
                   onClick,
                   completed,
                   text
-              }: {
-    onClick: any;
-    completed: boolean;
-    text: string;
-}) => (
+              }) => (
     <li
         onClick={onClick}
         style={{
@@ -186,10 +169,7 @@ const Todo = ({
 const TodoList = ({
                       todos,
                       onTodoClick
-                  }: {
-    todos: Todo[];
-    onTodoClick: any;
-}) => {
+                  }) => {
     return (
         <ul>
             {todos.map(todo =>
@@ -204,27 +184,39 @@ const TodoList = ({
     )
 };
 
-let AddTodo = ({dispatch}: {dispatch?: (action: any) => void}) => {
-    let input: HTMLInputElement;
+class AddTodo extends React.Component {
+    constructor(props) {
+        super(props)
+        this.setState({value: ""})
+        this.onChange = this.onChange.bind(this)
+        this.add = this.add.bind(this)
+    }
+    add(){
+        debugger
+        this.props.dispatch(addTodo(this.state.value))
+        this.setState({value: ""})
+    }
 
-    return (
-        <div>
-            <input ref={node => {
-                input = node;
-            }}/>
-            <button onClick={() => {
-                dispatch(addTodo(input.value));
-                input.value = '';
-            }}>
-                Add Todo
-            </button>
-        </div>
-    );
+    onChange(e) {
+        return this.setState({value: e.target.value});
+    }
+    render() {
+        return (
+            <div>
+                <input onChange={this.onChange} />
+                <button
+                    className="btn-primary"
+                    // disabled={isEmpty(this.state.value)}
+                    onClick={this.add}>
+                    Add Todo
+                </button>
+            </div>
+        );
+    }
 };
-AddTodo = connect()(AddTodo);
+const AddTodoConnected = connect()(AddTodo);
 
-const getVisibleTodos = (todos: Todo[],
-                         filter: string) => {
+const getVisibleTodos = (todos, filter) => {
     switch (filter) {
         case 'SHOW_ALL':
             return todos;
@@ -239,7 +231,7 @@ const getVisibleTodos = (todos: Todo[],
     }
 }
 
-const mapStateToTodoListProps = (state: any) => {
+const mapStateToTodoListProps = (state) => {
     return {
         todos: getVisibleTodos(
             state.todos,
@@ -247,9 +239,9 @@ const mapStateToTodoListProps = (state: any) => {
         )
     };
 };
-const mapDispatchToTodoListProps = (dispatch: any) => {
+const mapDispatchToTodoListProps = (dispatch) => {
     return {
-        onTodoClick: (id: number) => {
+        onTodoClick: (id) => {
             dispatch(toggleTodo(id));
         }
     };
@@ -265,7 +257,7 @@ const myHead = {
 }
 
 const TodoApp = () => {
-    const sectionStyle: CSSProperties = {
+    const sectionStyle = {
         backgroundColor: 'skyblue',
         left: 0,
         minHeight: 1000,
@@ -278,7 +270,7 @@ const TodoApp = () => {
         <div>
             <CollapsingHeader/>
             <section style={sectionStyle}>
-                <AddTodo/>
+                <AddTodoConnected/>
                 <VisibleTodoList/>
                 <Footer/>
             </section>
@@ -296,7 +288,7 @@ ReactDOM.render(
 );
 
 function CollapsingHeader() {
-    const style: CSSProperties = {
+    const style = {
         backgroundColor: 'salmon',
         position: 'absolute',
         top: 0,
@@ -312,12 +304,6 @@ function CollapsingHeader() {
     )
 }
 
-declare global {
-    interface Window {
-        myScrollY: HTMLElement;
-        myHeader: HTMLElement;
-    }
-}
 window.addEventListener('scroll', function(){
     const headerScrollLimit = myHead.maxHeight - myHead.minHeight
     if (window.scrollY <= headerScrollLimit) {
@@ -331,7 +317,7 @@ window.addEventListener('scroll', function(){
 
 /*
 class MyButton extends React.Component<{}, {oneShot: boolean}> {
-    constructor(props: any) {
+    constructor(props) {
         super(props);
         this.state = {oneShot: false};
         this.handleClick = this.handleClick.bind(this);

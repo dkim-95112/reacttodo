@@ -1,7 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    entry: './app.tsx',
+    entry: './app.jsx',
     mode: 'development',
     devtool: 'inline-source-map',
     output: {
@@ -10,9 +10,15 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.tsx?$/,
-                use: 'ts-loader',
-                exclude: /node_modules/
+                test: /\.jsx?$/,
+                exclude: /(node_modules|bower_components)/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env', '@babel/preset-react'],
+                        plugins: [require('@babel/plugin-proposal-object-rest-spread')]
+                    }
+                }
             },
             {
                 test: /\.less$/,
